@@ -1,0 +1,7 @@
+/* Get in touch icons */
+#social { margin:0; padding:0; }
+#social a { display:block; padding:20px; margin:0; }
+#social li { margin:5px 0 0 5px; padding:0; float:left; width:40px; height:40px; display:inline-block; }
+#odnoklassniki{ background: url("img/odnoklassniki.png") 0 0 no-repeat; }
+#vk{ background: url("img/vkontakte.png") 0 0 no-repeat; }
+#facebook{ background: url("img/facebook.png") 0 0 no-repeat; }
