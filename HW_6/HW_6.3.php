@@ -29,13 +29,13 @@ echo "<br>";
 function &changeArrayValueByLink($changeValue, &$array){
     foreach ($array as $key => $value) {
        if ($changeValue == $value) {
-           return $key;
+           return $array[$key];
        }
     }
 }
 
 $auto =& changeArrayValueByLink('Audi r8', $arr);
-$arr[$auto] = 'Aston Martin one-77';
+$auto = 'Aston Martin one-77';
 
 echo "<pre>";
     print_r($arr);
