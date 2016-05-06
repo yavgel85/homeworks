@@ -1,0 +1,127 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f1f1;
+  background-image: url(../img/bg.jpg);
+  background-size: cover;
+  font-family: 'Lato', sans-serif;
+  font-size: 150%;
+}
+
+form {
+  margin: auto;
+  padding: 15px;
+  width: 210px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 10px #ccc;
+}
+
+label {
+  position: relative;
+  display: inline-block;
+  margin: 25px 0;
+}
+
+label span {
+  position: absolute;
+  left: 20px;
+  top: -1.5em;
+  font-size: .85em;
+  cursor: text;
+  color: dodgerblue;
+  transition: all 150ms ease;
+}
+
+label.empty input {
+  border-color: #d9d9d9;
+}
+
+label.empty span {
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1em;
+  background: none;
+  color: #cccccc;
+}
+
+input {
+  border: 2px solid #f2f2f2;
+  outline: none;
+}
+
+input:focus {
+  border-color: #d9d9d9;
+}
+input:valid {
+  border-color: #42d142;
+}
+
+input:invalid {
+  border-color: #ff8e7a;
+}
+
+input, button {
+  padding: 15px 20px;
+  border-radius: 1px;
+  border: 2px solid #bdbdbd;
+}
+
+button {
+  border-color: #616161;
+  background: #616161;
+  color: #f6f7f8;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.admin_login{
+  width:300px;
+  border:1px solid #ccc;
+  padding:15px;
+  position:absolute;
+  left:50%;
+  top:50%;
+  margin:-100px 0 0 -150px;
+  text-align: center;
+}
+
+.admin_login p > a {
+  position: relative;
+  color: dodgerblue;
+  text-decoration: none;
+}
+
+.admin_login p > a:hover {
+  color: dodgerblue;
+}
+
+.admin_login p > a:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  visibility: hidden;
+  -webkit-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+.admin_login p > a:hover:before {
+  visibility: visible;
+  -webkit-transform: scaleX(1);
+  transform: scaleX(1);
+}
+
+.error {
+    color: darkred;
+    text-align: center;
+	font-size: .45em;
+}
