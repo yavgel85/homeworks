@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Upload files</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+            <!--разрешаем загрузку графических файлов-->
+            <label for="file" accept="image/*">Upload your image</label>
+            <input type="file" name="file" id="file">
+            <input type="submit" name="submit" id="submit" value="Submit">
+        </form>
+        <!--вместо кнопки Выберите файл-->
+        <script src="script.js"></script>
+    </body>
+</html>

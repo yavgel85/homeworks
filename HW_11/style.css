@@ -1,0 +1,17 @@
+body {
+    background: #333;
+}
+
+#fileSelector, #submit {
+    font-size: 1.3rem;
+    padding: .5rem 1rem;
+    background: hsl(50, 100%, 50%);
+    font-family: Avenir, sans-serif;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 1rem auto;
+}
+
+
+
