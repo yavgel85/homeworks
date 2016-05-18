@@ -1,0 +1,72 @@
+!!!!!!!!<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Directory iterator</title>
+<link href="<?=THEME;?>css/style.css" rel="stylesheet" type="text/css" /> 
+</head>
+<body>
+<div id="header">
+	<h1>Тест итератора</h1>
+	<span id="header_text">Обзор содержимого папок</span>
+</div>
+<div id="zip_wrap">
+	<div id="dirs_files">
+	<h2>Содержимое каталога</h2>
+			<table id="my_table">
+				<thead>
+					<td>Название</td>
+					<td>Размер</td>
+				</thead>
+<tr>
+	<td><a href="?do=main&path=<?=$res_arr['old_path'];?>">Назад</a></td>
+	<td></td>
+</tr>				
+	
+<!--Выводим папки-->
+<?php if($res_arr['dirs']) :?>
+	<? foreach($res_arr['dirs'] as $dirs) :?>
+		<tr>
+		<? foreach($dirs as $my_dir=>$val_dir) :?>
+			<td>
+				<img src="<?=THEME;?>images/dir2.png" align="left"><a href="?do=main&path=<?=$val_dir?>"><?=$my_dir;?></a>
+			</td>
+			<td>-</td>
+		<? endforeach;?>
+		</tr>
+	<? endforeach;?>
+<? endif;?>	
+<!--Выводим файлы-->
+<?php if($res_arr['files']) :?>
+	<? foreach($res_arr['files'] as $files) :?>
+		<tr>
+		<? foreach($files as $my_file=>$val_file) :?>
+			<td>
+				<? if(isset($val_file['type'])) :?>
+					<? if($val_file['type'] == "text") :?>
+						<a href="?do=view&path=<?=$res_arr['path'].$my_file;?>"><img src="<?=THEME;?>images/file.png" align="left"><?=$my_file;?></a>
+					<? elseif($val_file['type'] == "img") :?>
+					<a href="<?=$res_arr['path'].$my_file;?>"><img style="width:100px;" src="<?=$res_arr['path'].$my_file;?>" align="middle"></a><?=$my_file;?>
+					<? endif;?>
+				<? else :?>
+					<img src="<?=THEME;?>images/file.png" align="left"><?=$my_file;?>
+				<? endif;?>
+				
+			</td>
+			<td><?=$val_file['size'];?></td>
+		<? endforeach;?>
+		</tr>
+	<? endforeach;?>
+<? endif;?>			
+	<tbody>
+	</tbody>
+</table>
+</div>
+<div id="zip_wrap_end">&nbsp;</div>
+</div>
+<div id="footer">
+	<hr>
+	<p>2016 Created by <a href="#"><span class="author">Author</span></a>.All rights reserved</p>
+</div>
+</body>
+</html>
