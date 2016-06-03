@@ -1,0 +1,354 @@
+20.	Создать новую базу данных practice_db. Задать кодировку utf8 и сравнение utf8_general_ci.
+	CREATE DATABASE practice_db CHARACTER SET utf8 COLLATE utf8_general_ci ;
+	
+21.	В БД из предыдущего занятия создать таблицу country, в которой будут храниться данные о странах: название, сокращенное название (например ua, uk, es), площадь территории, 
+	численность населения, континент, президент.
+	CREATE TABLE IF NOT EXISTS `country` (`id` tinyint(4) NOT NULL AUTO_INCREMENT, `name` varchar(40) DEFAULT NULL, `short_name` varchar(2) DEFAULT NULL, `area` int(11) DEFAULT NULL,
+	`population` int(11) DEFAULT NULL, `continent` varchar(25) DEFAULT NULL, `president` varchar(30) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+	
+24.	Вставить в таблицу country 10 записей.
+	INSERT INTO `country` (`id`, `name`, `short_name`, `area`, `population`, `continent` `president`) VALUES
+	(1, 'Austria', 'AT', 83879, 8032926, 'Europe', 'Heinz Fischer'),
+	(2, 'Belarus', 'BY', 207596, 9498700, 'Europe', 'Alexander Lukashenko'),
+	(3, 'Belgium', 'BE', 30529, 11250585, 'Europe',  'Philippe'),
+	(4, 'Bulgaria', 'BG', 110994, 7202198, 'Europe', 'Rosen Plevneliev'),
+	(5, 'Hungary', 'HU', 93030, 9855571, 'Europe', 'Janos Ader'),
+	(6, 'Germany', 'DE', 357168, 81459000, 'Europe', 'Joachim Gauck'),
+	(7, 'Greece', 'GR', 131957, 10955000, 'Europe', 'Prokopis Pavlopoulos'),
+	(8, 'Denmark', 'DK', 42925, 5707251, 'Europe', 'Margrethe II'),
+	(9, 'Iceland', 'IS', 102775, 332529, 'Europe', 'Olafur Ragnar Grimsson'),
+	(10, 'Norway', 'NO', 385178, 5214900, 'Europe', 'Harald V'),
+	(11, ' Azerbaijan', 'AZ', 86600, 9574000, 'Asia', 'Ilham Aliyev'),
+	(12, 'Georgia', 'GE', 69700, 3729500, 'Asia', 'Giorgi Margvelashvili'),
+	(13, 'Turkey', 'TR', 780580, 77695904, 'Asia', 'Recep Tayyip Erdogan'),
+	(14, 'Qatar', 'QA', 11437, 1904934, 'Asia', 'Tamim bin Hamad Al Thani');
+	
+25.	Получить все записи всех полей из таблицы country. Получить список названий стран. Получить список названий стран и их президентов.
+	SELECT * FROM country;
+	SELECT name FROM country;
+	SELECT name, president FROM country;
+	
+26.	Таблица country: получить страны, порядковые номера которых больше 3 и меньше 7. Получить страны, в которых население больше 20 миллионов и порядковые номера которых меньше 7. 
+	Получить информацию о стране по конкретному названию. Получить страны Азии.
+	SELECT * FROM country WHERE id > 3 AND id < 7 ;
+	SELECT * FROM country WHERE id < 7 AND population > 20000000 ;
+	SELECT * FROM country WHERE name = 'Iceland' ;
+	SELECT * FROM country WHERE continent = 'Asia' ;
+	
+27.	Таблица country: получить страны, порядковые номера которых либо 5, либо 7, либо 2. Получить страны, названия которых содержат символ n.
+	SELECT * FROM country WHERE id IN(5, 7, 2);
+	SELECT * FROM country WHERE name LIKE '%n%';
+	
+28. Таблица country: получить выборку всех записей таблицы, назначив псевдонимы в виде сокращенных названий столбцов. Получить список континентов без повторений.
+	SELECT `id` AS `#`, `name` AS country, `short_name` AS country_short, `area` AS sqaure_km, `population` AS people, `continent` AS world_part, `president` AS `master` FROM `country` ;
+	SELECT DISTINCT continent FROM `country` ;
+	
+29.	Таблица country: сгруппировать записи по названию континентов.
+	SELECT * FROM `country` GROUP BY continent;
+	
+30.	Таблица country: получить максимальное и минимальное население по странам. Получить среднее население по Европейским странам. Получить общее население всех стран.
+	SELECT MIN(population) AS `min`, MAX(population) AS `max` FROM `country` ;
+	SELECT AVG(population) AS `avg` FROM `country` WHERE continent = 'Europe';
+	SELECT SUM(population) AS `total population` FROM `country` ;
+	
+31.	Таблица country: получить континенты, среднее население по странам которых превышает 20 000 000 человек.
+	SELECT continent, AVG(population) AS avg_population FROM country GROUP BY continent HAVING AVG(population) > 20000000 ;
+	
+32.	Таблица country: получить полную таблицу упорядоченную по названию страны. Получить полную таблицу упорядоченную по названию континентов и по названию страны.
+	SELECT * FROM country ORDER BY name;
+	SELECT * FROM country ORDER BY name, continent;
+	
+33.	Получить последнюю добавленную запись из таблицы country.
+	SELECT * FROM country LIMIT 13, 14;
+	
+35.	Таблица country: изменить количество населения в странах Европы и изменить действующего президента одной из стран.
+	UPDATE country SET population = 15000000 WHERE continent = 'Europe' ;
+	UPDATE country SET president = 'Ivan Matumba' WHERE id = 2 ;
+	
+36.	Удалить одну из записей из таблицы country.
+	DROP FROM country WHERE id = 15;
+	
+38. Таблица country: создать новую колонку continent_id, которя имеет тип TINYINT и значения по умолчанию NULL.
+	ALTER TABLE `country` ADD `continent_id` TINYINT NULL DEFAULT NULL ;
+
+39. Таблица country: добавить индекс по полю continent_id
+	ALTER TABLE `country` ADD INDEX(`continent_id`);
+
+40. Создать новую таблицу continent, в которой будут сохранены названия континентов. Связать таблицу continent с таблицей country по полю continent_id при помощи внешнего ключа. 
+	После этого удалить из таблицы поле, которое явно указывает название континента.
+	CREATE TABLE IF NOT EXISTS `continent` (`id` tinyint(4) NOT NULL AUTO_INCREMENT, `continent` varchar(50) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+	INSERT INTO `continent` (`id`, `continent`) VALUES (1, 'Asia'), (2, 'Europe');
+	
+	ALTER TABLE `country` ADD CONSTRAINT c_continent_id FOREIGN KEY (continent_id) REFERENCES continent (id) ON DELETE CASCADE ON UPDATE CASCADE;
+	ALTER TABLE `country` DROP `continent`;
+
+41. Создать таблицу с языками language (например English, Ukrainian, ...). Связать таблицу country с таблицей language, моделируя используемые языки в разных странах.
+	Например, в Украине чаще остальных используют украинский и русский язык. Таким образом необходимо получить связь многие ко многим.
+	CREATE TABLE IF NOT EXISTS `language` (`id` tinyint(4) NOT NULL AUTO_INCREMENT, `name` varchar(35) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+	INSERT INTO `language` (`id`, `name`) VALUES(1, 'English'),(2, 'Russian'),(3, 'Deutsch '),(4, 'Turkish'),(5, 'Greek'),(6, 'French'),(7, 'Arabic'),(8, 'Norwegian'),(9, 'Icelandic');
+	
+	CREATE TABLE IF NOT EXISTS `country_language` (`id` tinyint(4) NOT NULL AUTO_INCREMENT, `country_id` tinyint(4) NOT NULL, `language_id` tinyint(4) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+	INSERT INTO `country_language` (`id`, `country_id`, `language_id`) VALUES (1, 1, 3),(2, 2, 2),(3, 3, 3),(4, 4, 2),(5, 5, 3),(6, 6, 3),(7, 7, 5),(8, 8, 3),(9, 9, 9),(10, 10, 8),(11, 11, 2),(12, 12, 2),(13, 13, 4),(14, 14, 7);
+	
+	ALTER TABLE country_language ADD INDEX(country_id);
+	ALTER TABLE country_language ADD INDEX(language_id);
+	
+	ALTER TABLE country_language ADD CONSTRAINT cntr_country_id FOREIGN KEY (country_id) REFERENCES country(id) ON UPDATE CASCADE ON DELETE CASCADE ;
+	ALTER TABLE country_language ADD CONSTRAINT lng_language_id FOREIGN KEY (language_id) REFERENCES `language`(id) ON UPDATE CASCADE ON DELETE CASCADE ;
+	
+42.	Соединить таблицы country, continent для получения названий стран и названий континентов
+	SELECT country.name AS country, continent.name AS continent FROM country, continent WHERE country.continent_id = continent.id ;
+	
+43. Выполнить предыдущее задание при помощи JOIN
+	SELECT country.name AS country, continent.name AS continent FROM country JOIN continent ON country.continent_id = continent.id ;
+	
+44.	Добавить в таблицу languages новые языки. Получить выборку тех языков, которые не используются в имеющихся в базе данных странах. Использовать оператор сравнения IS NULL
+	SELECT language.name AS language FROM `language` LEFT JOIN country_language ON language.id = country_language.language_id LEFT JOIN country ON country.id = country_language.country_id WHERE country.name IS NULL;
+	
+46.	Добавить в таблицу country поле для премьер-министра страны и заполнить записи значениями. Вывести на экран таблицу, в которой будет представлены все президенты 
+	и все премьер-министры всех стран в одну колонку.
+	SELECT president AS president_and_prime_minister FROM country UNION SELECT prime_minister FROM country ;
+	
+47.	Используя приведенные примеры, подключится к БД своего проекта Devionity.
+	Не заводил проект на Devionity. 
+	
+48. Создать подключение PDO для базы данных из практических заданий practice_db.
+	$dsn = 'mysql:host=localhost; dbname=practice_db';
+	$user = 'root';
+	$password = '';
+	try {
+		$dbh = new PDO($dsn, $user, $password);
+		var_dump($dbh); // object(PDO)#1 (0) { }
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+	}
+	
+49.	Получить выборку по всей таблице со странами country. Вывести соответствующий массив на экран.
+	$dsn = 'mysql:host=localhost; dbname=practice_db';
+	$user = 'root';
+	$password = '';
+
+	try {
+		$dbh = new PDO($dsn, $user, $password);
+		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$sth = $dbh->query('SELECT * FROM country');
+		$country = $sth->fetchAll(PDO::FETCH_OBJ);
+		echo '<pre>'; print_r($country); echo '</pre>';
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+	}
+	
+	
+	OUTPUT:
+	
+		Array
+	(
+		[0] => stdClass Object
+			(
+				[id] => 1
+				[name] => Austria
+				[short_name] => AT
+				[area] => 83879
+				[population] => 8032926
+				[president] => Heinz Fischer
+				[prime_minister] => Christian Kern
+				[continent_id] => 2
+			)
+
+		[1] => stdClass Object
+			(
+				[id] => 2
+				[name] => Belarus
+				[short_name] => BY
+				[area] => 207596
+				[population] => 9498700
+				[president] => Alexander Lukashenko
+				[prime_minister] => Andrei Kobyakov
+				[continent_id] => 2
+			)
+
+		[2] => stdClass Object
+			(
+				[id] => 3
+				[name] => Belgium
+				[short_name] => BE
+				[area] => 30529
+				[population] => 11250585
+				[president] => Philippe
+				[prime_minister] => Charles Michel
+				[continent_id] => 2
+			)
+
+		[3] => stdClass Object
+			(
+				[id] => 4
+				[name] => Bulgaria
+				[short_name] => BG
+				[area] => 110994
+				[population] => 7202198
+				[president] => Rosen Plevneliev
+				[prime_minister] => Boyko Borisov
+				[continent_id] => 2
+			)
+
+		[4] => stdClass Object
+			(
+				[id] => 5
+				[name] => Hungary
+				[short_name] => HU
+				[area] => 93030
+				[population] => 9855571
+				[president] => Janos Ader
+				[prime_minister] => Viktor Orbбn
+				[continent_id] => 2
+			)
+
+		[5] => stdClass Object
+			(
+				[id] => 6
+				[name] => Germany
+				[short_name] => DE
+				[area] => 357168
+				[population] => 81459000
+				[president] => Joachim Gauck
+				[prime_minister] => Angela Merkel
+				[continent_id] => 2
+			)
+
+		[6] => stdClass Object
+			(
+				[id] => 7
+				[name] => Greece
+				[short_name] => GR
+				[area] => 131957
+				[population] => 10955000
+				[president] => Prokopis Pavlopoulos
+				[prime_minister] => Alexis Tsipras
+				[continent_id] => 2
+			)
+
+		[7] => stdClass Object
+			(
+				[id] => 8
+				[name] => Denmark
+				[short_name] => DK
+				[area] => 42925
+				[population] => 5707251
+				[president] => Margrethe II
+				[prime_minister] => Lars Lшkke Rasmussen
+				[continent_id] => 2
+			)
+
+		[8] => stdClass Object
+			(
+				[id] => 9
+				[name] => Iceland
+				[short_name] => IS
+				[area] => 102775
+				[population] => 332529
+				[president] => Olafur Ragnar Grimsson
+				[prime_minister] => Sigurрur Ingi Jуhannsson
+				[continent_id] => 2
+			)
+
+		[9] => stdClass Object
+			(
+				[id] => 10
+				[name] => Norway
+				[short_name] => NO
+				[area] => 385178
+				[population] => 5214900
+				[president] => Harald V
+				[prime_minister] => Erna Solberg
+				[continent_id] => 2
+			)
+
+		[10] => stdClass Object
+			(
+				[id] => 11
+				[name] =>  Azerbaijan
+				[short_name] => AZ
+				[area] => 86600
+				[population] => 9574000
+				[president] => Ilham Aliyev
+				[prime_minister] => Artur Rasizade
+				[continent_id] => 1
+			)
+
+		[11] => stdClass Object
+			(
+				[id] => 12
+				[name] => Georgia
+				[short_name] => GE
+				[area] => 69700
+				[population] => 3729500
+				[president] => Giorgi Margvelashvili
+				[prime_minister] => Giorgi Kvirikashvili
+				[continent_id] => 1
+			)
+
+		[12] => stdClass Object
+			(
+				[id] => 13
+				[name] => Turkey
+				[short_name] => TR
+				[area] => 780580
+				[population] => 77695904
+				[president] => Recep Tayyip Erdogan
+				[prime_minister] => Binali Y?ld?r?m
+				[continent_id] => 1
+			)
+
+		[13] => stdClass Object
+			(
+				[id] => 14
+				[name] => Qatar
+				[short_name] => QA
+				[area] => 11437
+				[population] => 1904934
+				[president] => Tamim bin Hamad Al Thani
+				[prime_minister] => Abdullah bin Khalifa Al Thani
+				[continent_id] => 1
+			)
+
+	)
+	
+50.	Получить вывести из скрипта на экран выборки из предыдущих заданий.
+	
+	$dsn = 'mysql:host=localhost; dbname=practice_db';
+	$user = 'root';
+	$password = '';
+
+	try {
+		$dbh = new PDO($dsn, $user, $password);
+		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$sth = $dbh->prepare('SELECT name, president FROM country WHERE name = ? AND president = ?');
+		$params = array('Belarus', 'Alexander Lukashenko');
+		$sth->execute($params);
+		$country = $sth->fetch(PDO::FETCH_ASSOC);
+		echo '<pre>'; print_r($country); echo '</pre>';
+		
+		echo '<br>';
+
+		$sth->execute( array('Qatar', 'Tamim bin Hamad Al Thani') );
+		$country = $sth->fetch(PDO::FETCH_ASSOC);
+		print_r($country);
+		
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+	}
+	
+	OUTPUT:
+	
+		Array
+	(
+		[name] => Belarus
+		[president] => Alexander Lukashenko
+	)
+
+	Array
+	(
+		[name] => Qatar
+		[president] => Tamim bin Hamad Al Thani
+	)
+		
