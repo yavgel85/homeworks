@@ -1,0 +1,140 @@
+1.	Создал БД.
+
+2.	Получить ТОП 3 платежа относительно суммы оплаты.
+	SELECT * FROM payments ORDER BY amount DESC LIMIT 3
+	
+3.	Сумма платежей по годам.
+	SELECT sum(amount) AS sum, check_number, YEAR(payment_date) FROM payments GROUP BY YEAR(payment_date);
+	
+4.	Платежи по месяцам и годам.
+	SELECT c.last_name, c.first_name, SUM(p.amount) as payment, YEAR(p.payment_date) AS year, MONTH(p.payment_date) AS month 
+	FROM customers c JOIN payments p ON c.id = p.customer_id 
+	WHERE c.id = 124
+	GROUP BY YEAR(p.payment_date), MONTH(p.payment_date) ;
+	
+5.	Количество сотрудников и количество заказчиков для каждого офиса.
+	SELECT o.id as office_id, COUNT(DISTINCT w.id) as worker_count, COUNT(c.id) as customer_count FROM offices o 
+	JOIN workers w ON o.id = w.office_id 
+	LEFT JOIN customers c ON w.id = c.worker_id 
+	GROUP BY o.id ;
+	
+6.	Средний доход на клиента/сотрудника.
+	SELECT c.id AS customer_id, p.id AS payment_id, ifnull( avg( p.amount ) , 0 ) , w.id AS worker_id
+	FROM customers c
+	JOIN payments p ON p.customer_id = c.id
+	RIGHT JOIN workers w ON w.id = c.worker_id
+	GROUP BY w.id ;
+	 
+7.	Сотрудники без клиентов.
+	SELECT w.last_name as worker, c.id as customer
+	FROM workers w
+	LEFT JOIN customers c ON w.id = c.worker_id
+	WHERE c.id IS NULL ;
+	
+8.	Получить ТОП 10 продаваемых товаров.
+	SELECT p.id AS product, count( p.id ) AS count 
+	FROM products p 
+	JOIN order_details od ON p.code = od.product_code 
+	JOIN orders o ON od.order_id = o.id 
+	JOIN customers c ON c.id = o.customer_id 
+	JOIN payments pa ON pa.customer_id = c.id 
+	GROUP BY product 
+	ORDER BY count DESC 
+	LIMIT 0 , 10
+	
+9.	Сотрудники, привязанные более чем к 5 клинетам.
+	SELECT w.id AS worker_id, w.first_name AS worker_name, COUNT(c.id) AS customers_count
+	FROM workers w
+	JOIN customers c ON w.id = c.worker_id
+	GROUP BY w.id
+	HAVING COUNT(c.id) > 5
+	
+10.	Заказы с наибольшим количеством товаров.
+	SELECT order_id, count( ordered_amount ) AS products_amount
+	FROM order_details
+	GROUP BY order_id
+	ORDER BY products_amount DESC
+	LIMIT 1
+	
+11.	Офисы с менее чем 15 заказов за год.
+	SELECT of.id AS office_id, count( o.id ) AS orders_count
+	FROM offices of
+	JOIN workers w ON w.office_id = of.id
+	JOIN customers c ON c.worker_id = w.id
+	JOIN orders o ON o.customer_id = c.id
+	WHERE year( o.date ) =2003
+	GROUP BY office_id
+	HAVING count( o.id ) < 15
+	
+12.	Выбор офисов, кроме конкретных.
+	SELECT * FROM `offices` WHERE id NOT IN ( 4, 7, 3 ) ;
+	
+13.	День месяца, месяц, год, сумма платежей.
+	SELECT 
+	DAY( payment_date ) AS day, 
+	MONTH( payment_date ) AS month, 
+	YEAR( payment_date ) AS year, 
+	sum( amount ) AS total_sum
+	FROM `payments`
+	GROUP BY payment_date
+	ORDER BY year, month, day ;
+	
+14. Месяц, год, максимальная сумма платежей.
+	SELECT MONTH( payment_date ) AS month , YEAR( payment_date ) AS year, MAX( amount ) AS max_sum
+	FROM `payments`
+	GROUP BY year, month ;
+	
+15.	Клиенты, которые не сделали заказ.
+	SELECT c.id, c.name, o.id FROM customers c
+	LEFT JOIN orders o
+	ON ( o.customer_id = c.id AND month( o.date ) = '2' AND year( o.date ) = '2004' )
+	WHERE o.id IS NULL ;
+	
+16.	Период заказов клиентов.
+	SELECT o1.id, o1.date, o1.customer_id,o2.id, o2.date, o2.customer_id 
+	FROM orders o1, orders o2 
+	WHERE o1.customer_id = o2.customer_id AND o1.date > o2.date 
+	AND (select count(*) from orders o3 where o3.date < o1.date and o3.date > o2.date and o1.customer_id = o3.customer_id) = 0 
+	AND period_diff(date_format(o1.date, '%y%m'), date_format(o2.date,'%y%m' )) > 3 
+	GROUP BY o1.customer_id 
+	ORDER BY o1.customer_id ASC ;
+	
+17.	Заказы без оплат.
+	SELECT c.id, c.name, c.last_name  FROM customers c 
+	JOIN orders o ON c.id = o.customer_id 
+	LEFT JOIN payments p ON p.customer_id = c.id 
+	WHERE p.id IS NULL 
+	GROUP BY c.id ;
+	
+18.	Продуктовые линейки клиента.
+	SELECT c.id as client_id, c.name as client, GROUP_CONCAT(DISTINCT pl.name) as product_line
+	FROM customers c 
+	JOIN orders o ON c.id = o.customer_id 
+	JOIN order_details od ON od.order_id = o.id 
+	JOIN products p ON p.code = od.product_code 
+	JOIN product_lines pl ON pl.id = p.product_line_id 
+	GROUP BY c.id ;
+	
+19.	Таблица по выборке.
+	CREATE TABLE test_table_2 AS (
+		SELECT c.id as client_id, c.name as client, GROUP_CONCAT(DISTINCT pl.name) as product_line
+		FROM customers c 
+		JOIN orders o ON c.id = o.customer_id 
+		JOIN order_details od ON od.order_id = o.id 
+		JOIN products p ON p.code = od.product_code 
+		JOIN product_lines pl ON pl.id = p.product_line_id 
+		GROUP BY c.id ;
+	);
+	
+20.	Добавляем запись по выборке.
+	INSERT INTO test_table_2 (client_id, client) SELECT 634, 'Some guy' ;
+
+21.	Работа с представлениями.
+	CREATE VIEW customer_product_lines AS 
+		SELECT c.id as client_id, c.name as client, GROUP_CONCAT(DISTINCT pl.name) as product_line
+		FROM customers c 
+		JOIN orders o ON c.id = o.customer_id 
+		JOIN order_details od ON od.order_id = o.id 
+		JOIN products p ON p.code = od.product_code 
+		JOIN product_lines pl ON pl.id = p.product_line_id 
+		GROUP BY c.id ;
