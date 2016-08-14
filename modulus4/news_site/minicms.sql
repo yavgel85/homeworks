@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `category` (
   `id_category` int(10) UNSIGNED NOT NULL,
   `name_category` varchar(255) NOT NULL,
-  `parent_id` int(11) NOT NULL
+  `parent_id` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

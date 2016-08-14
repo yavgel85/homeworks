@@ -9,7 +9,7 @@ class update_category extends ACoreAdmin {
         $parent_id = $_POST['parent_id'];
 
         // проверка на заполненость обязательных полей
-		if(empty($title || empty($parent_id))) {
+		if(empty($title)) {
 			exit("Не заполнены обязательные поля");
 		}
 
